@@ -1,0 +1,630 @@
+{
+	"info": {
+		"name": "Clinic API – JWT-Protected REST API with Role-Based Access",
+		"description": "A simple REST API for a medical clinic system with user roles (receptionist, doctor). Built using Go (Gin), PostgreSQL, JWT Auth, and GORM ORM.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "1) Sign up as Receptionist",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"reception1\",\r\n  \"password\": \"secret123\",\r\n  \"role\": \"receptionist\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"signup"
+							]
+						},
+						"description": "Signing up as Receptionist, using  \nPOST [http://localhost:8080/signup](http://localhost:8080/signupEndFragment)"
+					},
+					"response": []
+				},
+				{
+					"name": "1.1) Sign up as Doctor",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"doctor01\",\r\n  \"password\": \"securepassword\",\r\n  \"role\": \"doctor\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"signup"
+							]
+						},
+						"description": "Signing up as Doctor, using  \nPOST [http://localhost:8080/signup](http://localhost:8080/signupEndFragment)"
+					},
+					"response": []
+				},
+				{
+					"name": "2) Login as reception1",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"reception1\",\r\n  \"password\": \"secret123\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"login"
+							]
+						},
+						"description": "Logged in as \"reception1\".\n\nWe get a token to further do role-based CRUD operations."
+					},
+					"response": []
+				},
+				{
+					"name": "2.1) Log in as doctor01",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"doctor01\",\r\n  \"password\": \"securepassword\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"login"
+							]
+						},
+						"description": "Logged in as \"doctor01\".\n\nWe get a token to further do role-based CRUD operations."
+					},
+					"response": []
+				}
+			],
+			"description": "**Handles user registration and login for the clinic system.**\n\nIncludes endpoints for signing up as a doctor or receptionist, and logging in to receive a JWT token for accessing protected routes."
+		},
+		{
+			"name": "Receptionist Access",
+			"item": [
+				{
+					"name": "3) Access protected route",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"profile"
+							]
+						},
+						"description": "Conform if receptionist can access protected route"
+					},
+					"response": []
+				},
+				{
+					"name": "4) Add patient 1",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"John Doe\",\r\n  \"age\": 30,\r\n  \"address\": \"123 Street\",\r\n  \"phone\": \"1234567890\",\r\n  \"disease\": \"Flu\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/patients",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"patients"
+							]
+						},
+						"description": "Conform if receptionist can add new patients"
+					},
+					"response": []
+				},
+				{
+					"name": "5) Add patient 2",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Dan Doo\",\r\n  \"age\": 30,\r\n  \"address\": \"234 Street\",\r\n  \"phone\": \"1234557890\",\r\n  \"disease\": \"Flu\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/patients",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"patients"
+							]
+						},
+						"description": "Add patient-2 as receptionist"
+					},
+					"response": []
+				},
+				{
+					"name": "6) Add patient 3",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Dan P3\",\r\n  \"age\": 30,\r\n  \"address\": \"345 Street\",\r\n  \"phone\": \"1234557390\",\r\n  \"disease\": \"Flu\"\r\n}\r\n"
+						},
+						"url": {
+							"raw": "http://localhost:8080/patients",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"patients"
+							]
+						},
+						"description": "Add Patient-3 as receptionist"
+					},
+					"response": []
+				},
+				{
+					"name": "7) Get all patients",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/patients",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"patients"
+							]
+						},
+						"description": "Conform if receptionist can get patients"
+					},
+					"response": []
+				},
+				{
+					"name": "7.1) Get patient by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/patients/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"patients",
+								"1"
+							]
+						},
+						"description": "Conform if receptionist can get patient by id"
+					},
+					"response": []
+				},
+				{
+					"name": "8) Update patient",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"address\": \"456 New Street\",\r\n  \"phone\": \"9876543210\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/patients/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"patients",
+								"1"
+							]
+						},
+						"description": "Conform if receptionist can update patient"
+					},
+					"response": []
+				},
+				{
+					"name": "9) Delete patient",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/patients/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"patients",
+								"3"
+							]
+						},
+						"description": "Conform if Receptionist can delete patients"
+					},
+					"response": []
+				}
+			],
+			"description": "**Endpoints accessible to users with the 'receptionist' role.**\n\nReceptionists can manage patient records including creating, viewing, updating, and deleting patients.\n\nNote: JWT token must be provided in each request.\n\nGo to Authorization tab -> select Auth type: Bearer token -> put your reception1 token"
+		},
+		{
+			"name": "Doctor Access",
+			"item": [
+				{
+					"name": "10) Access protected route",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"profile"
+							]
+						},
+						"description": "Conform if doctor can access protected route"
+					},
+					"response": []
+				},
+				{
+					"name": "11) Get all patients",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/patients",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"patients"
+							]
+						},
+						"description": "Conform if doctor can get patients"
+					},
+					"response": []
+				},
+				{
+					"name": "11.1) Get patient by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/patients/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"patients",
+								"1"
+							]
+						},
+						"description": "Conform if doctor can access patient with id"
+					},
+					"response": []
+				},
+				{
+					"name": "12) Try adding patient (should fail)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"h2n oe\",\r\n  \"age\": 30,\r\n  \"address\": \"123 Street\",\r\n  \"phone\": \"1234567891\",\r\n  \"disease\": \"Flu\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/patients",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"patients"
+							]
+						},
+						"description": "Conform that doctor cannot add new patient"
+					},
+					"response": []
+				},
+				{
+					"name": "13) Update patient",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"address\": \"789 New Street\",\r\n  \"phone\": \"9876542220\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/patients/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"patients",
+								"1"
+							]
+						},
+						"description": "Conform if doctor can update patient"
+					},
+					"response": []
+				},
+				{
+					"name": "14) Try deleting patient (should fail)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/patients/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"patients",
+								"2"
+							]
+						},
+						"description": "Conform that doctor cannot delete patient"
+					},
+					"response": []
+				}
+			],
+			"description": "**Endpoints accessible to users with the 'doctor' role.**\n\nDoctors can view and update patient records, but cannot create or delete them. Ensures role-based authorization is working correctly."
+		}
+	]
+}
