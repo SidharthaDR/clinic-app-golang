@@ -13,9 +13,9 @@ A simple yet robust web application for managing clinic patient data, built with
 - **Full Patient CRUD** (RESTful API)  
 - **MVC Architecture**: Controllers, Models, Middleware cleanly organized  
 - **DB Setup**: PostgreSQL with environment-based configuration  
-- **Unit Tests**: For authentication and patient workflows  
+- **Unit Tests**: Used stub for unit testing. 
+- **API Testing**: Used Postman, with documentation included.
 - **API Protection**: Auth & Role-based middleware
-- **API Testing**: Postman
 
 ---
 
@@ -52,7 +52,7 @@ clinic-app-golang/
 │           db.go
 │
 └───tests
-        .env
+        .env    ---> Make your own .env file, described in coming steps
         example_test.go
 ```
 
@@ -79,6 +79,16 @@ clinic-app-golang/
     DB_NAME= clinic
 
    ```
+   Also create a `.env` file in tests folder:
+
+   ```.env
+    DB_HOST= localhost
+    DB_PORT= 5432
+    DB_USER= postgres
+    DB_PASSWORD= YourPassowrd123
+    DB_NAME= clinic_test
+
+   ```
 4. Run the server from root:
     ```cmd
         go run cmd/main.go
@@ -99,3 +109,29 @@ clinic-app-golang/
  - After you import this into Postman, after Auth phase, use generated login token for role based( Doctor/Receptionist) operations. we made 2 users -> doctor01, reception1 
  - Refer this Postman doc of this project for further clarity: https://documenter.getpostman.com/view/43825571/2sB2x5GsE7
  - After this, now you can Create/read/update/delete based on your role.
+ - For testing unit test stub
+  ```
+    go test ./tests/... -v
+  ```
+6. Check your database for patients and regestered users:
+   ```
+   1. Right-click on "clinic" database
+   2. Select "Query Tool"
+   3. To see list of patients run:
+       select * from public.patients;
+   4. To see list of users run:
+       select * from public.users;
+    ```
+---
+
+## ✔️ Conclusion
+
+- This Clinic Management REST API project demonstrates the use of Go (Gin), JWT-based authentication, and role-based access control to build a secure backend for a medical clinic. Receptionists can manage patient records, while doctors can update diagnoses — all powered by PostgreSQL and GORM.
+
+- Highlights:
+
+    Cleanly structured routes and middleware
+
+    Full CRUD operations with validation
+
+    JWT-authenticated role-based workflows
